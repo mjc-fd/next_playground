@@ -57,7 +57,7 @@ function Copyright(props: any) {
 
 const tiers = [
     {
-        title: 'Free',
+        title: 'Not Free',
         subheader: 'Most popular',
         price: '0',
         description: [
