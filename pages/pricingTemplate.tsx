@@ -32,7 +32,6 @@ function Copyright(props: any) {
 const tiers = [
     {
         title: 'Free',
-        subheader: 'Most popular',
         price: '0',
         description: [
             '10 users included',
@@ -43,7 +42,6 @@ const tiers = [
         buttonText: 'Sign up for free',
         buttonVariant: 'outlined',
     },
-    
     {
         title: 'Pro',
         subheader: 'Most popular',
@@ -72,32 +70,76 @@ const tiers = [
 ];
 const footers = [
     {
-        title: 'NEM',
-        description: ['Austrailian', 'Down Under', 'Sign In'],
+        title: 'Company',
+        description: ['Team', 'History', 'Contact us', 'Locations'],
     },
     {
-        title: 'ERCOT',
+        title: 'Features',
         description: [
-            'Texas',
-            'Longhorn',
-            'Hats'
+            'Cool stuff',
+            'Random feature',
+            'Team feature',
+            'Developer stuff',
+            'Another one',
         ],
     },
     {
-        title: 'CAISO',
-        description: ['California', 'Surfing', 'Yoga'],
-    }
+        title: 'Resources',
+        description: ['Resource', 'Resource name', 'Another resource', 'Final resource'],
+    },
+    {
+        title: 'Legal',
+        description: ['Privacy policy', 'Terms of use'],
+    },
 ];
 
-
-const heroTitle = 'Next/Main'
-const heroContent = 'See the amazing features! Be amazed!'
 function PricingContent() {
     return (
         <React.Fragment>
             <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
             <CssBaseline />
-                {/* Hero unit */}
+            <AppBar
+                position="static"
+                color="default"
+                elevation={0}
+                sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+            >
+                <Toolbar sx={{ flexWrap: 'wrap' }}>
+                    <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
+                        Company name
+                    </Typography>
+                    <nav>
+                        <Link
+                            variant="button"
+                            color="text.primary"
+                            href="#"
+                            sx={{ my: 1, mx: 1.5 }}
+                        >
+                            Features
+                        </Link>
+                        <Link
+                            variant="button"
+                            color="text.primary"
+                            href="#"
+                            sx={{ my: 1, mx: 1.5 }}
+                        >
+                            Enterprise
+                        </Link>
+                        <Link
+                            variant="button"
+                            color="text.primary"
+                            href="#"
+                            sx={{ my: 1, mx: 1.5 }}
+                        >
+                            Support
+                        </Link>
+                    </nav>
+                    <Button href="#" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                        Login
+                    </Button>
+                </Toolbar>
+            </AppBar>
+            {/* Hero unit */}
             <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
                 <Typography
                     component="h1"
@@ -106,10 +148,12 @@ function PricingContent() {
                     color="text.primary"
                     gutterBottom
                 >
-                    {heroTitle}
+                    Pricing
                 </Typography>
                 <Typography variant="h5" align="center" color="text.secondary" component="p">
-                    {heroContent}
+                    Quickly build an effective pricing table for your potential customers with
+                    this layout. It&apos;s built with default MUI components with little
+                    customization.
                 </Typography>
             </Container>
             {/* End hero unit */}
