@@ -15,13 +15,39 @@ import Link from '@mui/material/Link';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
 import { NextPage } from 'next';
+import useSWR from 'swr'
+
+
+
+const fetcher = async (url: string) => {
+    const res = await fetch(url)
+    const data = await res.json()
+
+    if (res.status !== 200) {
+        throw new Error(data.message)
+    }
+    console.log('fetched some data!', data)
+    return data
+}
+
+
+
 
 function Copyright(props: any) {
+
+
+    const { data, error } = useSWR(
+        () => `/api/bids`,
+        fetcher
+    )
+    if (error) return <div>{error.message}</div>
+ 
+
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                Your Website
+                {data? data?.length + " items loaded": 'no loaded data' }
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -31,7 +57,7 @@ function Copyright(props: any) {
 
 const tiers = [
     {
-        title: 'Free',
+        title: 'Not Free',
         subheader: 'Most popular',
         price: '0',
         description: [
@@ -43,7 +69,7 @@ const tiers = [
         buttonText: 'Sign up for free',
         buttonVariant: 'outlined',
     },
-    
+
     {
         title: 'Pro',
         subheader: 'Most popular',
@@ -92,12 +118,12 @@ const footers = [
 
 const heroTitle = 'Next/Main'
 const heroContent = 'See the amazing features! Be amazed!'
-function PricingContent() {
+function IndexContent() {
     return (
         <React.Fragment>
             <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
             <CssBaseline />
-                {/* Hero unit */}
+            {/* Hero unit */}
             <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
                 <Typography
                     component="h1"
@@ -217,8 +243,8 @@ function PricingContent() {
     );
 }
 
-const Pricing:NextPage = ()=> {
-    return <PricingContent />;
+const IndexPage: NextPage = () => {
+    return <IndexContent />;
 }
 
-export default Pricing;
+export default IndexPage;
