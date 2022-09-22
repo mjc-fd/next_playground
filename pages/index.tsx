@@ -20,14 +20,14 @@ import useSWR from 'swr'
 
 
 const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  const data = await res.json()
+    const res = await fetch(url)
+    const data = await res.json()
 
-  if (res.status !== 200) {
-    throw new Error(data.message)
-  } 
-  console.log('fetched some data!', data)
-  return data
+    if (res.status !== 200) {
+        throw new Error(data.message)
+    }
+    console.log('fetched some data!', data)
+    return data
 }
 
 
@@ -36,18 +36,18 @@ const fetcher = async (url: string) => {
 function Copyright(props: any) {
 
 
-  const { data, error } = useSWR(
-    () => `/api/bids`,
-    fetcher
-  )
-  if (error) return <div>{error.message}</div>
-
+    const { data, error } = useSWR(
+        () => `/api/bids`,
+        fetcher
+    )
+    if (error) return <div>{error.message}</div>
+ 
 
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                Your Website
+                {data? data?.length + " items loaded": 'no loaded data' }
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -69,7 +69,7 @@ const tiers = [
         buttonText: 'Sign up for free',
         buttonVariant: 'outlined',
     },
-    
+
     {
         title: 'Pro',
         subheader: 'Most popular',
@@ -123,7 +123,7 @@ function IndexContent() {
         <React.Fragment>
             <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
             <CssBaseline />
-                {/* Hero unit */}
+            {/* Hero unit */}
             <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
                 <Typography
                     component="h1"
@@ -243,7 +243,7 @@ function IndexContent() {
     );
 }
 
-const IndexPage:NextPage = ()=> {
+const IndexPage: NextPage = () => {
     return <IndexContent />;
 }
 
