@@ -46,12 +46,15 @@ const fetcher = async (query: string) => {
 
 
 function Copyright(props: any) {
+   
 
 
-    const { data, error } = useSWR(
+    const { data, error } = useSWR<any>(
         () => peopleQuery,
         fetcher
     )
+    if(typeof window === "undefined")
+    return <></>
     if (error) return <div>{error.message}</div>
  
 
@@ -59,7 +62,7 @@ function Copyright(props: any) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                {data? data?.length + " items loaded": 'no loaded data' }
+                {data?  data?.length + " items loaded": 'no loaded data' }
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
