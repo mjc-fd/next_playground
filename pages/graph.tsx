@@ -17,15 +17,24 @@ import Container from '@mui/material/Container';
 import { NextPage } from 'next';
 import useSWR from 'swr'
 import { GraphQLClient, gql } from 'graphql-request'
+import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
+import { useEffect, useState } from 'react';
 
 
 const peopleQuery = gql`
 query people {
-    demo_people(order_by: {created: asc}) {
-      company
+    demo_people {
       name
       id
       created
+      company {
+        name
+        employees_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
     }
   }
 `
@@ -33,10 +42,10 @@ query people {
 
 const fetcher = async (query: string) => {
     const url = "https://peaceful-troll-57.hasura.app/v1/graphql"
-    const client = new GraphQLClient(url, { headers: {'x-hasura-admin-secret':'3WL9cxydU5KIkPfEj2NvPz5mPra81o1MISSgy2HrPKCXOvGtJxvRdQrGGb6iIcO5'} })
+    const client = new GraphQLClient(url, { headers: { 'x-hasura-admin-secret': '3WL9cxydU5KIkPfEj2NvPz5mPra81o1MISSgy2HrPKCXOvGtJxvRdQrGGb6iIcO5' } })
 
-    const raw = await client.request( query)
-    const data =Object.values(raw)[0];
+    const raw = await client.request(query)
+    const data = Object.values(raw)[0];
 
     console.log('fetched some data!', data)
     return data
@@ -44,96 +53,30 @@ const fetcher = async (query: string) => {
 
 
 
+const heroTitle = 'Next/GraphQL'
+const heroContent = 'See the amazing features! Be amazed!'
+function IndexContent() {
 
-function Copyright(props: any) {
-   
+    const [isSSR, setIsSSR] = useState(true);
 
+    useEffect(() => {
+        setIsSSR(false);
+    }, []);
 
     const { data, error } = useSWR<any>(
         () => peopleQuery,
         fetcher
     )
-    if(typeof window === "undefined")
-    return <></>
+    if (typeof window === "undefined" || isSSR)
+        return <></>
     if (error) return <div>{error.message}</div>
- 
 
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                {data?  data?.length + " items loaded": 'no loaded data' }
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
-const tiers = [
-    {
-        title: 'Not Free',
-        subheader: 'Most popular',
-        price: '0',
-        description: [
-            '10 users included',
-            '2 GB of storage',
-            'Help center access',
-            'Email support',
-        ],
-        buttonText: 'Sign up for free',
-        buttonVariant: 'outlined',
-    },
-
-    {
-        title: 'Pro',
-        subheader: 'Most popular',
-        price: '15',
-        description: [
-            '20 users included',
-            '10 GB of storage',
-            'Help center access',
-            'Priority email support',
-        ],
-        buttonText: 'Get started',
-        buttonVariant: 'contained',
-    },
-    {
-        title: 'Enterprise',
-        price: '30',
-        description: [
-            '50 users included',
-            '30 GB of storage',
-            'Help center access',
-            'Phone & email support',
-        ],
-        buttonText: 'Contact us',
-        buttonVariant: 'outlined',
-    },
-];
-const footers = [
-    {
-        title: 'NEM',
-        description: ['Austrailian', 'Down Under', 'Sign In'],
-    },
-    {
-        title: 'ERCOT',
-        description: [
-            'Texas',
-            'Longhorn',
-            'Hats'
-        ],
-    },
-    {
-        title: 'CAISO',
-        description: ['California', 'Surfing', 'Yoga'],
-    }
-];
+    if (!data)
+        return <ClimbingBoxLoader color="#36d7b7" />
 
 
-const heroTitle = 'Next/Main'
-const heroContent = 'See the amazing features! Be amazed!'
-function IndexContent() {
+
+
     return (
         <React.Fragment>
             <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
@@ -150,110 +93,36 @@ function IndexContent() {
                     {heroTitle}
                 </Typography>
                 <Typography variant="h5" align="center" color="text.secondary" component="p">
-                    {heroContent}
+                    {data.length + ' items loaded'}
                 </Typography>
             </Container>
             {/* End hero unit */}
-            <Container maxWidth="md" component="main">
+            <Container maxWidth="xl" component="main">
                 <Grid container spacing={5} alignItems="flex-end">
-                    {tiers.map((tier) => (
+                    {data.map((datum: any) => (
                         // Enterprise card is full width at sm breakpoint
                         <Grid
                             item
-                            key={tier.title}
+                            key={datum.title}
                             xs={12}
-                            sm={tier.title === 'Enterprise' ? 12 : 6}
-                            md={4}
+                            sm={datum.title === 'Enterprise' ? 12 : 6}
+                            md={6}
                         >
                             <Card>
-                                <CardHeader
-                                    title={tier.title}
-                                    subheader={tier.subheader}
-                                    titleTypographyProps={{ align: 'center' }}
-                                    action={tier.title === 'Pro' ? <StarIcon /> : null}
-                                    subheaderTypographyProps={{
-                                        align: 'center',
-                                    }}
-                                    sx={{
-                                        backgroundColor: (theme) =>
-                                            theme.palette.mode === 'light'
-                                                ? theme.palette.grey[200]
-                                                : theme.palette.grey[700],
-                                    }}
-                                />
+
                                 <CardContent>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'baseline',
-                                            mb: 2,
-                                        }}
-                                    >
-                                        <Typography component="h2" variant="h3" color="text.primary">
-                                            ${tier.price}
-                                        </Typography>
-                                        <Typography variant="h6" color="text.secondary">
-                                            /mo
-                                        </Typography>
-                                    </Box>
-                                    <ul>
-                                        {tier.description.map((line) => (
-                                            <Typography
-                                                component="li"
-                                                variant="subtitle1"
-                                                align="center"
-                                                key={line}
-                                            >
-                                                {line}
-                                            </Typography>
-                                        ))}
-                                    </ul>
+                                    <Typography component="p" variant="body1" color="text.primary">
+                                        ${JSON.stringify(datum)}
+                                    </Typography>
+
                                 </CardContent>
-                                <CardActions>
-                                    <Button
-                                        fullWidth
-                                        variant={tier.buttonVariant as 'outlined' | 'contained'}
-                                    >
-                                        {tier.buttonText}
-                                    </Button>
-                                </CardActions>
+
                             </Card>
                         </Grid>
                     ))}
                 </Grid>
             </Container>
-            {/* Footer */}
-            <Container
-                maxWidth="md"
-                component="footer"
-                sx={{
-                    borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-                    mt: 8,
-                    py: [3, 6],
-                }}
-            >
-                <Grid container spacing={4} justifyContent="space-evenly">
-                    {footers.map((footer) => (
-                        <Grid item xs={6} sm={3} key={footer.title}>
-                            <Typography variant="h6" color="text.primary" gutterBottom>
-                                {footer.title}
-                            </Typography>
-                            <ul>
-                                {footer.description.map((item) => (
-                                    <li key={item}>
-                                        <Link href="#" variant="subtitle1" color="text.secondary">
-                                            {item}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Grid>
-                    ))}
-                </Grid>
-                <Copyright sx={{ mt: 5 }} />
-            </Container>
-            {/* End footer */}
+
         </React.Fragment>
     );
 }
