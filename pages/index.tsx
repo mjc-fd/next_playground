@@ -41,13 +41,13 @@ function Copyright(props: any) {
         fetcher
     )
     if (error) return <div>{error.message}</div>
- 
+
 
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                {data? data?.length + " items loaded": 'no loaded data' }
+                {data ? data?.length + " items loaded" : 'no loaded data'}
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -119,6 +119,15 @@ const footers = [
 const heroTitle = 'Next/Main'
 const heroContent = 'See the amazing features! Be amazed!'
 function IndexContent() {
+    const [isSSR, setIsSSR] = React.useState(true);
+
+    React.useEffect(() => {
+        setIsSSR(false);
+    }, []);
+    if (typeof window === "undefined" || isSSR)
+    return <></>
+
+
     return (
         <React.Fragment>
             <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
@@ -136,6 +145,9 @@ function IndexContent() {
                 </Typography>
                 <Typography variant="h5" align="center" color="text.secondary" component="p">
                     {heroContent}
+                    <Link href="/graph">
+                        <a>GraphQL</a>
+                    </Link>
                 </Typography>
             </Container>
             {/* End hero unit */}

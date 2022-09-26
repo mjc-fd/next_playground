@@ -19,6 +19,11 @@ import useSWR from 'swr'
 import { GraphQLClient, gql } from 'graphql-request'
 import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
 import { useEffect, useState } from 'react';
+import { TextField } from '@mui/material';
+
+const heroTitle = 'Next/GraphQL'
+const heroContent = 'See the amazing features! Be amazed!'
+
 
 
 const peopleQuery = gql`
@@ -43,11 +48,11 @@ query peopleQuery($_name: String = "%") {
 `
 
 
-const fetcher = async (query: string) => {
+const fetcher = async (query: string, name:string) => {
     const url = "https://peaceful-troll-57.hasura.app/v1/graphql"
     const client = new GraphQLClient(url, { headers: { 'x-hasura-admin-secret': '3WL9cxydU5KIkPfEj2NvPz5mPra81o1MISSgy2HrPKCXOvGtJxvRdQrGGb6iIcO5' } })
 
-    const raw = await client.request(query)
+    const raw = await client.request(query, {"_name":name?'%'+name+'%':'%'});
     const data = Object.values(raw)[0];
 
     console.log('fetched some data!', data)
@@ -56,18 +61,22 @@ const fetcher = async (query: string) => {
 
 
 
-const heroTitle = 'Next/GraphQL'
-const heroContent = 'See the amazing features! Be amazed!'
+
+
+
+
 function IndexContent() {
 
     const [isSSR, setIsSSR] = useState(true);
+    const [filter, setFilter] = useState('');
+
 
     useEffect(() => {
         setIsSSR(false);
     }, []);
 
     const { data, error } = useSWR<any>(
-        () => peopleQuery,
+        [peopleQuery, filter],
         fetcher
     )
     if (typeof window === "undefined" || isSSR)
@@ -97,7 +106,11 @@ function IndexContent() {
                 </Typography>
                 <Typography variant="h5" align="center" color="text.secondary" component="p">
                     {data.length + ' items loaded'}
+                    <Link href="/">
+                        <a>Back Home</a>
+                    </Link>
                 </Typography>
+                <TextField  id="outlined-basic" label="Name" value={filter} variant="outlined"  onChange={(e)=>{setFilter(e.target.value)}}/>
             </Container>
             {/* End hero unit */}
             <Container maxWidth="xl" component="main">
