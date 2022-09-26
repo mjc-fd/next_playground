@@ -22,8 +22,8 @@ import { useEffect, useState } from 'react';
 
 
 const peopleQuery = gql`
-query people {
-    demo_people {
+query peopleQuery($_name: String = "%") {
+    demo_people(where: {name: {_ilike: $_name}}) {
       name
       id
       created
@@ -32,6 +32,9 @@ query people {
         employees_aggregate {
           aggregate {
             count
+            max {
+              created
+            }
           }
         }
       }
@@ -103,9 +106,8 @@ function IndexContent() {
                         // Enterprise card is full width at sm breakpoint
                         <Grid
                             item
-                            key={datum.title}
+                            key={datum.id}
                             xs={12}
-                            sm={datum.title === 'Enterprise' ? 12 : 6}
                             md={6}
                         >
                             <Card>
